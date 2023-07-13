@@ -57,8 +57,8 @@ export function Greeter(): ReactElement {
   const { library, active } = context;
 
   const [signer, setSigner] = useState<Signer>();
-  const [greeterContract, setGreeterContract] = useState<Contract>();
-  const [greeterContractAddr, setGreeterContractAddr] = useState<string>(FarmingYieldAddress.Token);
+  const [farmingYieldContract, setFarmingYieldContract] = useState<Contract>(new ethers.Contract(FarmingYieldAddress.Token, FarmingYieldArtifact.abi, signer));
+  const [farmingYieldContractAddr, setFarmingYieldContractAddr] = useState<string>(FarmingYieldAddress.Token);
   const [greeting, setGreeting] = useState<string>('');
   // const [greetingInput, setGreetingInput] = useState<string>('');
   const [depositInput, setDepositInput] = useState<string>('');
@@ -90,37 +90,23 @@ export function Greeter(): ReactElement {
   }, [library]);
 
   useEffect((): void => {
-    if (!greeterContract) {
+    if (!farmingYieldContract) {
       return;
     }
   
-
-    async function getGreeting(greeterContract: Contract): Promise<void> {
-      // const _greeting = await greeterContract.greet();
-
-      // if (_greeting !== greeting) {
-      //   setGreeting(_greeting);
-      // }
-    }
-
-    getGreeting(greeterContract);
-  }, [greeterContract, greeting]);
+  }, [farmingYieldContract, greeting]);
 
   function handleDeployContract(event: MouseEvent<HTMLButtonElement>) {
     event.preventDefault();
-
     // only deploy the Greeter contract one time, when a signer is defined
-    if (greeterContract || !signer) {
+    if (!farmingYieldContract || !signer) {
       return;
     }
-
-    async function deployGreeterContract(signer: Signer): Promise<void> {
-
-
+    async function deployfarmingYieldContract(signer: Signer): Promise<void> {
       try {
-        setGreeterContract(farmingYield);
+        setFarmingYieldContract(farmingYield);
         setGreeting(greeting);
-        window.alert(`Staking Token deployed to: ${stakingTokenAddress.Token}\nReward Token deployed to: ${rewardToken1Address.Token}\nfarmingYieldContract deployed to: ${FarmingYieldAddress.Token}\n `);
+        window.alert(`Staking Token deployed at: ${stakingTokenAddress.Token}\nReward Token deployed at: ${rewardToken1Address.Token}\nfarmingYieldContract deployed at: ${FarmingYieldAddress.Token}\n `);
 
         
       } catch (error: any) {
@@ -130,7 +116,7 @@ export function Greeter(): ReactElement {
       }
     }
 
-    deployGreeterContract(signer);
+    deployfarmingYieldContract(signer);
   }
   
 
@@ -140,73 +126,141 @@ export function Greeter(): ReactElement {
   }
   function handleWithdrawChange(event: ChangeEvent<HTMLInputElement>): void {
     event.preventDefault();
-    setDepositInput(event.target.value);
+    setWithdrawInput(event.target.value);
   }
 
   function depositButton(event: MouseEvent<HTMLButtonElement>): void {
     event.preventDefault();
 
-    if (!greeterContract) {
-      window.alert('Undefined greeterContract');
+    if (!farmingYieldContract) {
+      window.alert('Undefined farmingYieldContract');
       return;
     }
 
     if (!depositInput) {
-      window.alert('Greeting cannot be empty');
+      window.alert('depositInput cannot be empty');
       return;
     }
-
-    async function submitGreeting(greeterContract: Contract): Promise<void> {
+    if (!library) {
+      return;
+    }
+    if (!signer) {
+      return;
+    }
+    async function submitGreeting(farmingYieldContract: Contract, library: Provider, signer: Signer): Promise<void> {
+     
       try {
-        const setGreetingTxn = await greeterContract.setGreeting(depositInput);
+        await stakingTK.connect(signer).approve(farmingYieldContract.address, 2020);
+        const setGreetingTxn = await farmingYieldContract.connect(signer).deposit(depositInput);
 
         await setGreetingTxn.wait();
 
-        const newGreeting = await greeterContract.greet();
-        window.alert(`Success!\n\nGreeting is now: ${newGreeting}`);
+        window.alert(`Success!\n\nDeposit`);
 
-        if (newGreeting !== greeting) {
-          setGreeting(newGreeting);
-        }
       } catch (error: any) {
+        console.log(error.message);
         window.alert(
           'Error!' + (error && error.message ? `\n\n${error.message}` : '')
         );
       }
     }
 
-    submitGreeting(greeterContract);
+    submitGreeting(farmingYieldContract, library, signer);
+  }
+
+  function withdrawButton(event: MouseEvent<HTMLButtonElement>): void {
+    event.preventDefault();
+
+    if (!farmingYieldContract) {
+      window.alert('Undefined farmingYieldContract');
+      return;
+    }
+
+    if (!withdrawInput) {
+      window.alert('withdrawInput cannot be empty');
+      return;
+    }
+    if (!library) {
+      return;
+    }
+    if (!signer) {
+      return;
+    }
+    
+    async function withdraw(farmingYieldContract: Contract, library: Provider, signer: Signer): Promise<void> {
+     
+      try {
+        const setGreetingTxn = await farmingYieldContract.connect(signer).withdraw(withdrawInput);
+
+        await setGreetingTxn.wait();
+
+        window.alert(`Success!\n\nWithDraw`);
+
+      } catch (error: any) {
+        console.log(error.message);
+        window.alert(
+          'Error!' + (error && error.message ? `\n\n${error.message}` : '')
+        );
+      }
+    }
+
+    withdraw(farmingYieldContract, library, signer);
+  }
+
+  function claimButton(event: MouseEvent<HTMLButtonElement>): void {
+    event.preventDefault();
+
+    if (!farmingYieldContract) {
+      window.alert('Undefined farmingYieldContract');
+      return;
+    }
+    if (!library) {
+      return;
+    }
+    if (!signer) {
+      return;
+    }
+    
+    async function withdraw(farmingYieldContract: Contract, library: Provider, signer: Signer): Promise<void> {
+     
+      try {
+        const setGreetingTxn = await farmingYieldContract.connect(signer).claim();
+        await setGreetingTxn.wait();
+
+        window.alert(`Success!\n\nClaim`);
+
+      } catch (error: any) {
+        console.log(error.message);
+        window.alert(
+          'Error!' + (error && error.message ? `\n\n${error.message}` : '')
+        );
+      }
+    }
+
+    withdraw(farmingYieldContract, library, signer);
   }
 
   return (
     <>
-      {/* <StyledDeployContractButton
-        disabled={!active || greeterContract ? true : false}
+          <StyledDeployContractButton
         style={{
-          cursor: !active || greeterContract ? 'not-allowed' : 'pointer',
-          borderColor: !active || greeterContract ? 'unset' : 'blue'
+          cursor: 'pointer',
+          borderColor: 'blue'
         }}
         onClick={handleDeployContract}
       >
-        Farming Yield Contract
+        Contract Addresses
       </StyledDeployContractButton>
-      <SectionDivider /> */}
+      <SectionDivider />
       <StyledGreetingDiv>
         <StyledLabel>Contract addr</StyledLabel>
         <div>
-          {greeterContractAddr ? (
-            greeterContractAddr
+          {farmingYieldContractAddr ? (
+            farmingYieldContractAddr
           ) : (
             <em>{`<Contract not yet deployed>`}</em>
           )}
         </div>
-        {/* empty placeholder div below to provide empty first row, 3rd col div for a 2x3 grid */}
-        {/* <div></div>
-        <StyledLabel>Current greeting</StyledLabel>
-        <div>
-          {greeting ? greeting : <em>{`<Contract not yet deployed>`}</em>}
-        </div> */}
-        {/* empty placeholder div below to provide empty first row, 3rd col div for a 2x3 grid */}
         <div></div>
         <StyledLabel htmlFor="depositInput">Deposit </StyledLabel>
         <StyledInput
@@ -240,7 +294,7 @@ export function Greeter(): ReactElement {
             cursor: 'pointer',
             borderColor: 'blue'
           }}
-          onClick={depositButton}
+          onClick={withdrawButton}
         >
           withdraw
         </StyledButton>
@@ -250,7 +304,7 @@ export function Greeter(): ReactElement {
             cursor: 'pointer',
             borderColor: 'blue'
           }}
-          onClick={depositButton}
+          onClick={claimButton}
         >
           claim
         </StyledButton>

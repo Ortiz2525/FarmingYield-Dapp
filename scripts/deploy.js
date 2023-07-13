@@ -37,7 +37,8 @@ stakingToken = await ERC20MockFactory.deploy("Staking Token", "STK");
 rewardToken1 = await ERC20MockFactory.deploy("Reward Token 1", "RT1");
 
 const FarmingYieldFactory = await ethers.getContractFactory("FarmingYield");
-const lockPeriod = 30 * 24 * 60 * 60;
+// const lockPeriod = 30 * 24 * 60 * 60;
+const lockPeriod = 1;
 FarmingYield = await FarmingYieldFactory.deploy(
   stakingToken.address,
   rewardToken1.address,
