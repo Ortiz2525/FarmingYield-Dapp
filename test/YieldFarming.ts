@@ -7,7 +7,6 @@ describe("FarmingYield", () => {
   let ERC20Mock: Contract;
   let stakingToken: Contract;
   let rewardToken1: Contract;
-  let rewardToken2: Contract;
   let owner: Signer;
   let addr1: Signer;
   let addr2: Signer;
@@ -19,18 +18,15 @@ describe("FarmingYield", () => {
     const ERC20MockFactory = await ethers.getContractFactory("ERC20Mock");
     stakingToken = await ERC20MockFactory.deploy("Staking Token", "STK");
     rewardToken1 = await ERC20MockFactory.deploy("Reward Token 1", "RT1");
-    rewardToken2 = await ERC20MockFactory.deploy("Reward Token 2", "RT2");
 
     const FarmingYieldFactory = await ethers.getContractFactory("FarmingYield");
     const lockPeriod = 30 * 24 * 60 * 60;
     FarmingYield = await FarmingYieldFactory.deploy(
       stakingToken.address,
       rewardToken1.address,
-      rewardToken2.address,
       1, // depositFeePercent
       await treasury.getAddress(), // treasury
       1000, // reward1PerBlock
-      2000, // reward2PerBlock
       lockPeriod
     );
   });
@@ -42,7 +38,6 @@ describe("FarmingYield", () => {
 
     it("Should set the correct reward tokens", async () => {
       expect(await FarmingYield.rewardToken1()).to.equal(rewardToken1.address);
-      expect(await FarmingYield.rewardToken2()).to.equal(rewardToken2.address);
     });
   });
 
@@ -84,11 +79,9 @@ describe("FarmingYield", () => {
       
       //amount of rewardtokens based on share from staking amount in 90% total reward token.
       await expect (await rewardToken1.balanceOf(await addr1.getAddress())).to.be.equal(ethers.BigNumber.from("1800")); // ({blockpass = 2}*1000)*90/100
-      await expect (await rewardToken2.balanceOf(await addr1.getAddress())).to.be.equal(ethers.BigNumber.from("3600")); // ({blockpass = 2}*2000)*90/100
       //amount of tokens in treasury. depositfee = 1%
       await expect (await stakingToken.balanceOf(await treasury.getAddress())).to.be.equal(ethers.BigNumber.from("20"));
       await expect (await rewardToken1.balanceOf(await treasury.getAddress())).to.be.equal(ethers.BigNumber.from("200"));
-      await expect (await rewardToken2.balanceOf(await treasury.getAddress())).to.be.equal(ethers.BigNumber.from("400"));
       expect(userInfo.amount).to.equal(2000); //  2020 - fee
     });
   });
@@ -209,18 +202,14 @@ describe("FarmingYield", () => {
       const userInfo = await FarmingYield.userInfo(await addr1.getAddress());
       expect(userInfo.amount).to.equal(500); // 1980 - 1500
       await expect (await rewardToken1.balanceOf(await addr1.getAddress())).to.be.equal(ethers.BigNumber.from("3600")); // ({blockpass = 4}*1000)*90/100
-      await expect (await rewardToken2.balanceOf(await addr1.getAddress())).to.be.equal(ethers.BigNumber.from("7200")); // ({blockpass = 4}*2000)*90/100
       await expect (await stakingToken.balanceOf(await treasury.getAddress())).to.be.equal(ethers.BigNumber.from("20"));
       await expect (await rewardToken1.balanceOf(await treasury.getAddress())).to.be.equal(ethers.BigNumber.from("400"));
-      await expect (await rewardToken2.balanceOf(await treasury.getAddress())).to.be.equal(ethers.BigNumber.from("800"));
       await ethers.provider.send("evm_mine",[]);
       await ethers.provider.send("evm_mine",[]);
       await FarmingYield.connect(addr1).withdraw(200);
       await expect (await rewardToken1.balanceOf(await addr1.getAddress())).to.be.equal(ethers.BigNumber.from("6300")); // 3600+({blockpass = 3}*1000)*90/100
-      await expect (await rewardToken2.balanceOf(await addr1.getAddress())).to.be.equal(ethers.BigNumber.from("12600")); // 7200+({blockpass = 3}*2000)*90/100
       await expect (await stakingToken.balanceOf(await treasury.getAddress())).to.be.equal(ethers.BigNumber.from("20"));
       await expect (await rewardToken1.balanceOf(await treasury.getAddress())).to.be.equal(ethers.BigNumber.from("700")); //400+({blockpass = 3}*1000)*10/100
-      await expect (await rewardToken2.balanceOf(await treasury.getAddress())).to.be.equal(ethers.BigNumber.from("1400"));  //800+({blockpass = 3}*2000)*10/100
     });
   
     it("Should emit Withdraw event", async () => {
@@ -253,10 +242,8 @@ describe("FarmingYield", () => {
   
       // Check if the claim was successful
       const reward1Balance = await rewardToken1.balanceOf(await addr1.getAddress());
-      const reward2Balance = await rewardToken2.balanceOf(await addr1.getAddress());
       expect(reward1Balance).to.be.equal(ethers.BigNumber.from(1800));  //blockpass=2  1000*2*90/100
-      expect(reward2Balance).to.be.equal(ethers.BigNumber.from(3600));
-    });
+      });
   
     it("Should emit Claim event", async () => {
       // Increase time to generate some rewards
@@ -269,10 +256,9 @@ describe("FarmingYield", () => {
       // Check if the Claim event is emitted
       await expect(FarmingYield.connect(addr1).claim())
         .to.emit(FarmingYield, "Claim")
-       .withArgs(await addr1.getAddress(), 3600, 7200); //blockpass = 4
+       .withArgs(await addr1.getAddress(), 3600); //blockpass = 4
        await expect (await stakingToken.balanceOf(await treasury.getAddress())).to.be.equal(ethers.BigNumber.from("10"));
        await expect (await rewardToken1.balanceOf(await treasury.getAddress())).to.be.equal(ethers.BigNumber.from("400"));
-       await expect (await rewardToken2.balanceOf(await treasury.getAddress())).to.be.equal(ethers.BigNumber.from("800"));
     });
     
   });

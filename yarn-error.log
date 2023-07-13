@@ -1,0 +1,56 @@
+Arguments: 
+  C:\Program Files\nodejs\node.exe C:\Users\Administrator\AppData\Local\node\corepack\yarn\1.22.19\bin\yarn.js add @chakra-ui
+
+PATH: 
+  C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Users\Administrator\AppData\Roaming\nvm;C:\Program Files\nodejs;C:\Users\Administrator\AppData\Local\Microsoft\WindowsApps;C:\Users\Administrator\AppData\Roaming\nvm;C:\Program Files\nodejs;C:\Users\Administrator\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\Administrator\AppData\Local\GitHubDesktop\bin
+
+Yarn version: 
+  1.22.19
+
+Node version: 
+  18.16.0
+
+Platform: 
+  win32 x64
+
+Trace: 
+  Error: https://registry.yarnpkg.com/@chakra-ui: Request "https://registry.yarnpkg.com/@chakra-ui" returned a 405
+      at params.callback [as _callback] (C:\Users\Administrator\AppData\Local\node\corepack\yarn\1.22.19\lib\cli.js:66154:18)
+      at self.callback (C:\Users\Administrator\AppData\Local\node\corepack\yarn\1.22.19\lib\cli.js:140890:22)
+      at Request.emit (node:events:513:28)
+      at Request.<anonymous> (C:\Users\Administrator\AppData\Local\node\corepack\yarn\1.22.19\lib\cli.js:141862:10)
+      at Request.emit (node:events:513:28)
+      at IncomingMessage.<anonymous> (C:\Users\Administrator\AppData\Local\node\corepack\yarn\1.22.19\lib\cli.js:141784:12)
+      at Object.onceWrapper (node:events:627:28)
+      at IncomingMessage.emit (node:events:525:35)
+      at endReadableNT (node:internal/streams/readable:1359:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:82:21)
+
+npm manifest: 
+  {
+    "devDependencies": {
+      "@nomicfoundation/hardhat-toolbox": "^1.0.2",
+      "hardhat": "^2.14.0",
+      "hardhat-boilerplate": "^1.0.1",
+      "hardhat-ethers": "^1.0.1",
+      "openzeppelin-contracts": "^4.0.0"
+    },
+    "dependencies": {
+      "@ethereum-waffle/mock-contract": "^4.0.4",
+      "@openzeppelin/contracts": "^4.9.0",
+      "@openzeppelin/test-helpers": "^0.5.16",
+      "@uniswap/v2-core": "^1.0.1",
+      "@uniswap/v2-periphery": "^1.1.0-beta.0",
+      "@web3-react/core": "^8.2.0",
+      "@web3-react/injected-connector": "^6.0.7",
+      "@web3-react/walletconnect-connector": "^6.2.13",
+      "@web3-react/walletlink-connector": "^6.2.14",
+      "uniswap": "^0.0.1"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
