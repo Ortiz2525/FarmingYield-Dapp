@@ -49,18 +49,21 @@ FarmingYield = await FarmingYieldFactory.deploy(
 console.log("stakingToken address:", stakingToken.address);
 console.log("rewardToken1 address:", rewardToken1.address);
 console.log("FarmingYield address:", FarmingYield.address);
+await stakingToken.mint(await deployer.getAddress(),100000000);
+console.log("Account balance:", (await stakingToken.balanceOf(await deployer.getAddress())).toString());
+
 //console.log("treasury address:", FarmingYield.address);
 
   
   // We also save the contract's artifacts and address in the frontend directory
   saveFrontendFiles(stakingToken,"stakingToken","ERC20Mock");
-  saveFrontendFiles(stakingToken,"rewardToken1","ERC20Mock");
-  saveFrontendFiles(stakingToken,"FarmingYield","FarmingYield");
+  saveFrontendFiles(rewardToken1,"rewardToken1","ERC20Mock");
+  saveFrontendFiles(FarmingYield,"FarmingYield","FarmingYield");
 }
 
 function saveFrontendFiles(token,tokenName,contractName) {
   const fs = require("fs");
-  const contractsDir = path.join(__dirname, "..", "frontend", "src", "contracts");
+  const contractsDir = path.join(__dirname, "..", "frontend1", "src", "contracts");
 
   if (!fs.existsSync(contractsDir)) {
     fs.mkdirSync(contractsDir);

@@ -1,0 +1,30 @@
+{
+  "..\\node_modules\\@walletconnect\\modal\\dist\\index.js -> @walletconnect/modal-ui": {
+    "id": "..\\node_modules\\@walletconnect\\modal\\dist\\index.js -> @walletconnect/modal-ui",
+    "files": [
+      "static/chunks/node_modules_walletconnect_modal-ui_dist_index_js.js"
+    ]
+  },
+  "..\\node_modules\\@web3-react\\walletconnect-v2\\node_modules\\@walletconnect\\ethereum-provider\\dist\\index.es.js -> @walletconnect/modal": {
+    "id": "..\\node_modules\\@web3-react\\walletconnect-v2\\node_modules\\@walletconnect\\ethereum-provider\\dist\\index.es.js -> @walletconnect/modal",
+    "files": [
+      "static/chunks/node_modules_walletconnect_modal_dist_index_js.js"
+    ]
+  },
+  "..\\node_modules\\viem\\dist\\cjs\\actions\\public\\call.js -> ../../utils/ccip.js": {
+    "id": "..\\node_modules\\viem\\dist\\cjs\\actions\\public\\call.js -> ../../utils/ccip.js",
+    "files": []
+  },
+  "..\\node_modules\\viem\\dist\\cjs\\utils\\rpc.js -> isomorphic-ws": {
+    "id": "..\\node_modules\\viem\\dist\\cjs\\utils\\rpc.js -> isomorphic-ws",
+    "files": [
+      "static/chunks/node_modules_viem_node_modules_isomorphic-ws_browser_js.js"
+    ]
+  },
+  "..\\node_modules\\viem\\dist\\cjs\\utils\\signature\\recoverPublicKey.js -> @noble/curves/secp256k1": {
+    "id": "..\\node_modules\\viem\\dist\\cjs\\utils\\signature\\recoverPublicKey.js -> @noble/curves/secp256k1",
+    "files": [
+      "static/chunks/node_modules_viem_node_modules_noble_curves_esm_secp256k1_js.js"
+    ]
+  }
+}
